@@ -1,0 +1,70 @@
+#include <WiFi.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_ILI9341.h>
+#define BTN_PIN 5
+#define TFT_DC 2
+#define TFT_CS 15
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+float speed = 0.0;
+bool increaseSpeed = true;
+void displaySpeed(float speed) {
+  tft.fillScreen(ILI9341_BLACK);
+ 
+  // Display the speed in the center of the screen
+  tft.setCursor(40, 100);
+  tft.setTextColor(ILI9341_GREEN);
+  tft.setTextSize(4);
+  tft.print("Speed:");
+ 
+  tft.setCursor(120, 150);
+  tft.setTextColor(ILI9341_WHITE);
+  tft.setTextSize(6);
+  tft.print(speed, 1);  // Display speed with one decimal
+ 
+  tft.setTextSize(3);
+  tft.print(" km/h");
+}
+ 
+void updateSpeed() {
+  if (increaseSpeed) {
+    speed += 2.0;  // Increase speed by 2.0
+    if (speed >= 120.0) {
+      increaseSpeed = false;  // Reverse direction if at max
+    }
+  } else {
+    speed -= 2.0;  // Decrease speed by 2.0
+    if (speed <= 0.0) {
+      increaseSpeed = true;  // Reverse direction if at min
+    }
+  }
+}
+ 
+void setup() {
+  pinMode(BTN_PIN, INPUT_PULLUP);
+  tft.begin();
+  tft.setRotation(1);
+ 
+  tft.setTextColor(ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.print("Initializing Speedometer");
+ 
+  delay(1000);
+  tft.fillScreen(ILI9341_BLACK);
+}
+ 
+void loop() {
+  updateSpeed();
+  displaySpeed(speed);
+ 
+  delay(500);  // Adjust delay to control speed update frequency
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
